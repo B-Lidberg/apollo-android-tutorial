@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.apollographql.apollo.coroutines.toFlow
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.collect
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,9 +27,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 .collect {
                     val trips = it.data?.tripsBooked
-                    val text = when {
-                        trips == null -> getString(R.string.subscriptionError)
-                        trips == -1 -> getString(R.string.tripCancelled)
+                    val text = when (trips) {
+                        null -> getString(R.string.subscriptionError)
+                        -1 -> getString(R.string.tripCancelled)
                         else -> getString(R.string.tripBooked, trips)
                     }
                     Snackbar.make(
